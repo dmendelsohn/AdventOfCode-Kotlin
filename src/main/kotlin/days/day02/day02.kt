@@ -6,8 +6,12 @@ private const val INPUT_PATH = "inputs/day02.txt"
 private val regex = Regex("""(\d+)-(\d+) ([a-z]): ([a-z]+)""")
 
 private data class Policy(val char: Char, val range: IntRange) {
-    fun isValid(password: String): Boolean {
+    fun isValidPart1(password: String): Boolean {
         return range.contains(password.count { it == char })
+    }
+
+    fun isValidPart2(password: String): Boolean {
+        return (password[range.first - 1] == char) xor (password[range.last() - 1] == char)
     }
 }
 
@@ -15,7 +19,14 @@ private data class Policy(val char: Char, val range: IntRange) {
 private fun parseLine(line: String): Pair<Policy, String> {
     val regexMatch = regex.matchEntire(line)
     regexMatch ?: throw IllegalArgumentException("Could not parse input line: $line")
-    return regexMatch.destructured.let { (lo, hi, letter, password) -> Pair(Policy(letter.first(), IntRange(lo.toInt(), hi.toInt())), password) }
+    return regexMatch.destructured.let { (lo, hi, letter, password) ->
+        Pair(
+            Policy(
+                letter.first(),
+                IntRange(lo.toInt(), hi.toInt())
+            ), password
+        )
+    }
 }
 
 
@@ -24,11 +35,11 @@ private fun getInput(): List<String> {
 }
 
 private fun part1(): Any {
-    return getInput().map { parseLine(it) }.count { (policy, password) -> policy.isValid(password) }
+    return getInput().map { parseLine(it) }.count { (policy, password) -> policy.isValidPart1(password) }
 }
 
 private fun part2(): Any {
-    return "Not implemented"
+    return getInput().map { parseLine(it) }.count { (policy, password) -> policy.isValidPart2(password) }
 }
 
 
