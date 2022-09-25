@@ -7,7 +7,7 @@ private val regex = Regex("""(\d+)-(\d+) ([a-z]): ([a-z]+)""")
 
 private data class Policy(val char: Char, val range: IntRange) {
     fun isValidPart1(password: String): Boolean {
-        return range.contains(password.count { it == char })
+        return password.count { it == char } in range
     }
 
     fun isValidPart2(password: String): Boolean {
@@ -22,8 +22,7 @@ private fun parseLine(line: String): Pair<Policy, String> {
     return regexMatch.destructured.let { (lo, hi, letter, password) ->
         Pair(
             Policy(
-                letter.first(),
-                IntRange(lo.toInt(), hi.toInt())
+                letter.single(), lo.toInt()..hi.toInt()
             ), password
         )
     }
