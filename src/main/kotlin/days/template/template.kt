@@ -2,7 +2,7 @@ package days.template
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/dayXX.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 private fun getInput(): List<String> {
     return File(INPUT_PATH).readLines()

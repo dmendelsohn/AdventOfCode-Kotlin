@@ -6,7 +6,7 @@ package days.day09
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/day09.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
 private const val BUFFER_SIZE = 25
 
 private fun getInput(): Sequence<Long> =
