@@ -17,7 +17,9 @@ private fun String.toOperator(): Operator {
 
 
 private interface Expression {
-    fun evaluate(): Long
+    fun evaluate1(): Long
+
+    fun evaluate2(): Long
 }
 
 private class ComputedExpression(val children: List<Expression>, val operators: List<Operator>) : Expression {
@@ -27,20 +29,41 @@ private class ComputedExpression(val children: List<Expression>, val operators: 
         }
     }
 
-    override fun evaluate(): Long {
-        val initialValue = children.first().evaluate()
+    override fun evaluate1(): Long {
+        val initialValue = children.first().evaluate1()
         val expressionsAndOperators = operators.zip(children.drop(1))
         return expressionsAndOperators.fold(initialValue) { acc, (operator, child) ->
             when (operator) {
-                Operator.ADD -> acc + child.evaluate()
-                Operator.MULTIPLY -> acc * child.evaluate()
+                Operator.ADD -> acc + child.evaluate1()
+                Operator.MULTIPLY -> acc * child.evaluate1()
             }
         }
+    }
+
+    override fun evaluate2(): Long {
+        // Here a "group" is one or more consecutive expressions with only addition in between
+        var result = 1L
+        val initialValue = children.first().evaluate2()
+        val expressionsAndOperators = operators.zip(children.drop(1))
+        expressionsAndOperators.fold(initialValue) { latestGroupSum, (operator, child) ->
+            when (operator) {
+                Operator.ADD -> latestGroupSum + child.evaluate2()// Continue existing group
+                Operator.MULTIPLY -> {
+                    result *= latestGroupSum
+                    child.evaluate2() // Start a new group
+                }
+            }
+        }.let { finalGroupSum -> result *= finalGroupSum }
+        return result
     }
 }
 
 private class ValueExpression(val value: Long) : Expression {
-    override fun evaluate(): Long {
+    override fun evaluate1(): Long {
+        return value
+    }
+
+    override fun evaluate2(): Long {
         return value
     }
 }
@@ -118,11 +141,11 @@ private fun findMatchingParen(tokens: List<Token>, idxAfterOpen: Int): Int {
 }
 
 private fun part1(): Long {
-    return getInput().sumOf { it.evaluate() }
+    return getInput().sumOf { it.evaluate1() }
 }
 
 private fun part2(): Any {
-    return "Not implemented"
+    return getInput().sumOf { it.evaluate2() }
 }
 
 
