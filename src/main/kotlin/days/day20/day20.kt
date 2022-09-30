@@ -8,6 +8,11 @@ private const val TILE_GRID_LENGTH = 12
 
 
 private typealias Edge = List<Boolean>
+private typealias BooleanGrid = List<List<Boolean>>
+
+private fun gridToString(grid: BooleanGrid): String {
+    return grid.joinToString("\n") { row -> row.map { if (it) '#' else '.' }.joinToString("") }
+}
 
 private fun Edge.toInt(): Int {
     return map { if (it) '1' else '0' }.joinToString("").toInt(2)
@@ -19,7 +24,7 @@ private fun minOf(first: Edge, second: Edge): Edge {
 
 private typealias TileId = Int
 
-private data class Tile(val id: TileId, val grid: List<List<Boolean>>) {
+private data class Tile(val id: TileId, val grid: BooleanGrid) {
 
     init {
         require(grid.size == EDGE_LENGTH) { "Grid must have $EDGE_LENGTH rows, not ${grid.size}" }
@@ -37,8 +42,7 @@ private data class Tile(val id: TileId, val grid: List<List<Boolean>>) {
     }
 
     override fun toString(): String {
-        val renderedGrid = grid.joinToString("\n") { row -> row.map { if (it) '#' else '.' }.joinToString("") }
-        return "Tile: $id:\n$renderedGrid"
+        return "Tile: $id:\n${gridToString(grid)}"
     }
 
     companion object {
@@ -98,20 +102,23 @@ private fun selectTile(
 }
 
 /** Rotate 90 degrees clockwise */
-private fun Tile.rotate90(): Tile {
+private fun BooleanGrid.rotate90(): BooleanGrid {
+    require(this.size == this.first().size) { "Not a square" }
     val rotatedGrid = mutableListOf<MutableList<Boolean>>()
-    for (row in 0 until EDGE_LENGTH) {
+    for (row in 0..this.lastIndex) {
         rotatedGrid.add(mutableListOf())
-        for (col in 0 until EDGE_LENGTH) {
-            rotatedGrid.last().add(this.grid[EDGE_LENGTH - 1 - col][row])
+        for (col in 0..this.first().lastIndex) {
+            rotatedGrid.last().add(this[this.lastIndex - col][row])
         }
     }
-    return Tile(this.id, rotatedGrid.map { row -> row.toList() })
+    return rotatedGrid.map { row -> row.toList() }
 }
 
-/** Flip about horizontal axis */
-private fun Tile.flip(): Tile {
-    return Tile(id, grid.reversed())
+/** Get all rotations and reflections */
+private fun BooleanGrid.getAllOrientations(): List<BooleanGrid> {
+    val allRotations = mutableListOf(this)
+    repeat(3) { allRotations.add(allRotations.last().rotate90()) }
+    return allRotations.flatMap { listOf(it, it.reversed()) }
 }
 
 private fun Tile.isValidFit(above: Tile?, left: Tile?): Boolean {
@@ -125,9 +132,7 @@ private fun Tile.isValidFit(above: Tile?, left: Tile?): Boolean {
 
 private fun orientTile(tile: Tile, above: Tile?, left: Tile?): Tile {
     // Just try all orientations
-    val allRotations = mutableListOf(tile)
-    repeat(3) { allRotations.add(allRotations.last().rotate90()) }
-    val allOrientations = allRotations.flatMap { listOf(it, it.flip()) }
+    val allOrientations = tile.grid.getAllOrientations().map { Tile(tile.id, it) }
     return allOrientations.first { it.isValidFit(above, left) }
 }
 
@@ -141,9 +146,9 @@ private fun orientTopLeftTile(tile: Tile, neighbors: Collection<Tile>): Tile {
 
     return when (edgesWithoutMatch) {
         setOf(3, 0) -> tile
-        setOf(2, 3) -> tile.rotate90()
-        setOf(1, 2) -> tile.rotate90().rotate90()
-        setOf(0, 1) -> tile.rotate90().rotate90().rotate90()
+        setOf(2, 3) -> tile.grid.rotate90().let { Tile(tile.id, it) }
+        setOf(1, 2) -> tile.grid.rotate90().rotate90().let { Tile(tile.id, it) }
+        setOf(0, 1) -> tile.grid.rotate90().rotate90().rotate90().let { Tile(tile.id, it) }
         else -> throw IllegalStateException("Unexpected non-matching edges: $edgesWithoutMatch")
     }
 }
@@ -193,8 +198,70 @@ private fun part1(): Long {
     }
 }
 
+/** Stitch together a row of tiles (dropping edges which don't matter). */
+private fun stitchTileRow(tiles: List<Tile>): BooleanGrid {
+    return (1..EDGE_LENGTH - 2).map { rowIdx ->
+        tiles.flatMap { tile -> tile.grid[rowIdx].slice(1..EDGE_LENGTH - 2) }
+    }
+}
+
+/** Stitch together all the tiles into one big grid (dropping edges that don't matter) */
+private fun stitchTiles(tileGrid: List<List<Tile>>): BooleanGrid {
+    return tileGrid.flatMap { row -> stitchTileRow(row) }
+}
+
+private typealias Point = Pair<Int, Int> // Row then col
+
+private fun Point.add(other: Point): Point {
+    return Point(this.first + other.first, this.second + other.second)
+}
+
+private fun BooleanGrid.isActive(point: Point): Boolean {
+    if (!this.indices.contains(point.first) || !this[0].indices.contains(point.second)) {
+        return false // Out of bounds is not active
+    }
+    return this[point.first][point.second]
+}
+
+/** Return set of points relative to top-left corner of rectangle */
+private fun getMonsterPattern(): Set<Point> {
+    val text = """
+    |                  # 
+    |#    ##    ##    ###
+    | #  #  #  #  #  #   
+    """.trimMargin()
+    return text.split("\n").mapIndexed { row, line ->
+        line.mapIndexedNotNull { col, c -> if (c == '#') Pair(row, col) else null }
+    }.flatten().toSet()
+}
+
+private fun isPatternAt(grid: BooleanGrid, pattern: Set<Point>, refPoint: Point): Boolean {
+    return pattern.all { patternPoint -> grid.isActive(refPoint.add(patternPoint)) }
+}
+
+/** Get all active locations covered by the pattern somewhere in the grid */
+private fun getPatternLocations(grid: BooleanGrid, pattern: Set<Pair<Int, Int>>): Set<Pair<Int, Int>> {
+    val locations = mutableSetOf<Pair<Int, Int>>()
+    for (row in grid.indices) {
+        for (col in grid[row].indices) {
+            val refPoint = Pair(row, col)
+            if (isPatternAt(grid, pattern, refPoint)) {
+                locations.addAll(pattern.map { it.add(refPoint) })
+            }
+        }
+    }
+    return locations.toSet()
+}
+
 private fun part2(): Any {
-    return "Not implemented"
+    val tileGrid = arrangeTiles(getInput().associateBy { it.id })
+    val image = stitchTiles(tileGrid)
+    val monsterPattern = getMonsterPattern()
+    val numLocationsCovered = image.getAllOrientations().maxOf {
+        getPatternLocations(it, monsterPattern).size
+    }
+    val numActiveLocations = image.sumOf { row -> row.count { it } }
+    return numActiveLocations - numLocationsCovered
 }
 
 
