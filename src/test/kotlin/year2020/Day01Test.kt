@@ -3,6 +3,12 @@ package year2020
 import year2020.day01.*
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
+import java.io.File
+
+
+private fun getTestInput(): String {
+    return File("inputs/test01.txt").readText()
+}
 
 class Day01Test {
     @Test
@@ -11,6 +17,15 @@ class Day01Test {
         val parsedInput = parseInput(rawInput)
         val expectedParsedInput = listOf(1, 10, 100)
         assertEquals(expectedParsedInput, parsedInput)
+    }
+
+    @Test
+    fun part2_endToEnd() {
+        val rawInput = getTestInput()
+        val parsedInput = parseInput(rawInput)
+        val result = part1(parsedInput)
+        val expectedResult = 514579L
+        assertEquals(expectedResult, result)
     }
 
     @Test
@@ -42,6 +57,15 @@ class Day01Test {
         val input = listOf(1, 1010)
         val result = part1(input)
         val expectedResult = -1L
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun part1_endToEnd() {
+        val rawInput = getTestInput()
+        val parsedInput = parseInput(rawInput)
+        val result = part2(parsedInput)
+        val expectedResult = 241861950L
         assertEquals(expectedResult, result)
     }
 

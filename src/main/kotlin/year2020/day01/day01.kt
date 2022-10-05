@@ -8,9 +8,10 @@ package year2020.day01
 import java.io.File
 
 private const val TARGET = 2020
+private val DEFAULT_INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
 
-private fun getRawInput(): String {
-    return File("inputs/day01.txt").readText()
+private fun getRawInput(inputPath: String): String {
+    return File(inputPath).readText()
 }
 
 fun parseInput(rawInput: String): List<Int> {
@@ -53,8 +54,10 @@ fun part2(input: List<Int>): Long {
 }
 
 
-fun main() {
-    val input = parseInput(getRawInput())
+fun main(args: Array<String>) {
+    val inputPath = args.firstOrNull() ?: DEFAULT_INPUT_PATH
+    println("Running using input from $inputPath")
+    val input = parseInput(getRawInput(inputPath))
     println("Solution to part 1: ${part1(input)}")
     println("Solution to part 2: ${part2(input)}")
 }
