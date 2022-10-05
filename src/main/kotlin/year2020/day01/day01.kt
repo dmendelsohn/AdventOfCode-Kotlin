@@ -1,35 +1,60 @@
+/**
+ * Implementation notes:
+ * - this solution handles the possibility of duplicate input values.
+ * - in practice, this doesn't happen in our input, but it was fun to write.
+ */
 package year2020.day01
 
 import java.io.File
 
-private fun getInput(): List<Int> {
-    return File("inputs/day01.txt").readLines().map { it.toInt() }
+private const val TARGET = 2020
+
+private fun getRawInput(): String {
+    return File("inputs/day01.txt").readText()
 }
 
-private fun part1(): Any {
-    val numbers = getInput().toSet()
-    for (number in numbers) {
-        if (numbers.contains(2020 - number)) {
-            return number * (2020 - number)
+fun parseInput(rawInput: String): List<Int> {
+    return rawInput.trim().split("\n").map { it.toInt() }
+}
+
+// Invariant: all values are >= 1
+private typealias FrequencyCount = Map<Int, Int>
+
+private fun FrequencyCount.decrement(decrementKey: Int): FrequencyCount {
+    return this.mapValues { (key, value) -> if (key == decrementKey) value - 1 else value }.filterValues { it > 0 }
+}
+
+fun part1(input: List<Int>): Long {
+    val numberCounts = input.groupingBy { it }.eachCount()
+    for (number in numberCounts.keys) {
+        val remainingNumberCounts = numberCounts.decrement(number)
+        val complement = TARGET - number
+        if (remainingNumberCounts.contains(complement)) {
+            return 1L * number * complement
+
         }
     }
-    return "No solution"
+    return -1
 }
 
-private fun part2(): Any {
-    val numbers = getInput().toSet()
-    for (first in numbers) {
-        for (second in numbers) {
-            if (numbers.contains(2020 - first - second)) {
-                return first * second * (2020 - first - second)
+fun part2(input: List<Int>): Long {
+    val numberCounts = input.groupingBy { it }.eachCount()
+    for (first in numberCounts.keys) {
+        val remainingCountsAfterFirst = numberCounts.decrement(first)
+        for (second in remainingCountsAfterFirst.keys) {
+            val remainingCountsAfterSecond = remainingCountsAfterFirst.decrement(second)
+            val complement = TARGET - first - second
+            if (remainingCountsAfterSecond.contains(complement)) {
+                return 1L * first * second * complement
             }
         }
     }
-    return "No solution"
+    return -1
 }
 
 
-fun main(args: Array<String>) {
-    println("Solution to part 1: ${part1()}")
-    println("Solution to part 2: ${part2()}")
+fun main() {
+    val input = parseInput(getRawInput())
+    println("Solution to part 1: ${part1(input)}")
+    println("Solution to part 2: ${part2(input)}")
 }
