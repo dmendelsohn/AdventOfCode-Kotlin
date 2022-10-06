@@ -8,16 +8,19 @@ private fun getRawInput(inputPath: String): String {
     return File(inputPath).readText().trim()
 }
 
-fun parseInput(rawInput: String): List<String> {
-    return rawInput.split("\n")
+fun parseInput(rawInput: String): List<Int> {
+    return rawInput.map { it.toString().toInt() }
 }
 
-fun part1(input: List<String>): Any {
-    return "Not implemented"
+fun part1(input: List<Int>): Int {
+    return (input + input.first()).zipWithNext().sumOf { if (it.first == it.second) it.first else 0 }
 }
 
-fun part2(input: List<String>): Any {
-    return "Not implemented"
+fun part2(input: List<Int>): Int {
+    val firstHalf = input.take(input.size / 2)
+    val secondHalf = input.drop(input.size / 2)
+    check(firstHalf.size == secondHalf.size)
+    return 2 * firstHalf.zip(secondHalf).sumOf { if (it.first == it.second) it.first else 0 }
 }
 
 
