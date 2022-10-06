@@ -2,7 +2,7 @@ package year2020.day06
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/year2020/day06.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 
 typealias Group = List<Set<Char>>
 

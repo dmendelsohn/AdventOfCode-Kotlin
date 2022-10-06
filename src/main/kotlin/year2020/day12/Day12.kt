@@ -3,7 +3,7 @@ package year2020.day12
 import java.io.File
 import kotlin.math.abs
 
-private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 
 private fun getInput(): List<Instruction> {
     return File(INPUT_PATH).readLines().map { Instruction.parse(it) }

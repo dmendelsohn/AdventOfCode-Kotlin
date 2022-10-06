@@ -1,6 +1,6 @@
 import java.io.File
 
-private val DEFAULT_INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val DEFAULT_INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 
 private fun getRawInput(inputPath: String): String {
     return File(inputPath).readText().trim()

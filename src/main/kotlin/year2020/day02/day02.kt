@@ -2,7 +2,7 @@ package year2020.day02
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/year2020/day02.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 private val regex = Regex("""(\d+)-(\d+) ([a-z]): ([a-z]+)""")
 
 private data class Policy(val char: Char, val range: IntRange) {

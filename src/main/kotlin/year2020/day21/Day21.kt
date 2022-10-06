@@ -2,7 +2,7 @@ package year2020.day21
 
 import java.io.File
 
-private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 // private const val INPUT_PATH = "inputs/year2020/test21.txt"
 
 private typealias Ingredient = String

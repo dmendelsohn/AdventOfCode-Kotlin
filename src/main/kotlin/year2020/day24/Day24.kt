@@ -2,7 +2,7 @@ package year2020.day24
 
 import java.io.File
 
-private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 
 private val directionSymbols = listOf("e", "se", "sw", "w", "ne", "nw")
 
