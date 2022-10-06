@@ -8,16 +8,41 @@ private fun getRawInput(inputPath: String): String {
     return File(inputPath).readText().trim()
 }
 
-fun parseInput(rawInput: String): List<String> {
-    return rawInput.split("\n")
+fun parseInput(rawInput: String): List<Int> {
+    return rawInput.split("\\s+".toRegex()).map { it.toInt() }
 }
 
-fun part1(input: List<String>): Any {
-    return "Not implemented"
+fun reallocate(banks: List<Int>): List<Int> {
+    val numBlocks = banks.maxOrNull()!!
+    val bankToReallocate = banks.indexOf(numBlocks)
+    val mutableBanks = banks.toMutableList()
+    mutableBanks[bankToReallocate] = 0
+    (1..numBlocks).forEach { mutableBanks[(bankToReallocate + it) % banks.size] += 1 }
+    return mutableBanks.toList()
 }
 
-fun part2(input: List<String>): Any {
-    return "Not implemented"
+
+private data class Result(val totalSteps: Int, val loopLength: Int)
+
+private fun reallocateUntilLoop(banks: List<Int>): Result {
+    // Maps states to the most recent move # after which that state was seen
+    val statesSeen = mutableMapOf<List<Int>, Int>()
+    var numMoves = 0
+    var currentBanks = banks
+    while (!statesSeen.keys.contains(currentBanks)) {
+        statesSeen[currentBanks] = numMoves
+        numMoves += 1
+        currentBanks = reallocate(currentBanks)
+    }
+    return Result(numMoves, numMoves - statesSeen.getValue(currentBanks))
+}
+
+fun part1(input: List<Int>): Any {
+    return reallocateUntilLoop(input).totalSteps
+}
+
+fun part2(input: List<Int>): Any {
+    return reallocateUntilLoop(input).loopLength
 }
 
 
