@@ -2,7 +2,7 @@ package year2020.day20
 
 import java.io.File
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 private const val EDGE_LENGTH = 10
 private const val TILE_GRID_LENGTH = 12
 

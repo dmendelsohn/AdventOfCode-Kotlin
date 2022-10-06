@@ -2,7 +2,7 @@ package year2020.day17
 
 import java.io.File
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 private fun getInput(): List<List<Boolean>> {
     return File(INPUT_PATH).readLines().map { line -> line.map { it == '#' } }

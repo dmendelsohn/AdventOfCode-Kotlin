@@ -2,7 +2,7 @@ package year2020.day05
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/day05.txt"
+private const val INPUT_PATH = "inputs/year2020/day05.txt"
 private const val MAX_ROW = 127
 private const val MAX_COL = 7
 

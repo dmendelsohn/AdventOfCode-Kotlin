@@ -2,7 +2,7 @@ package year2020.day07
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/day07.txt"
+private const val INPUT_PATH = "inputs/year2020/day07.txt"
 
 private fun getInput(): RuleSet {
     return File(INPUT_PATH).readLines().map { Rule.parse(it) }.associateBy { it.outerColor }

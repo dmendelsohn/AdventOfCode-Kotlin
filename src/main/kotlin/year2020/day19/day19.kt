@@ -2,7 +2,7 @@ package year2020.day19
 
 import java.io.File
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 /*
 A few notes on nomenclature so that this matches CFG terminology better:

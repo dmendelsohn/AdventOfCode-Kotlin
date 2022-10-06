@@ -2,7 +2,7 @@ package year2020.day03
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/day03.txt"
+private const val INPUT_PATH = "inputs/year2020/day03.txt"
 
 typealias Grid = Array<BooleanArray>
 typealias Vector = Pair<Int, Int>  // down, right

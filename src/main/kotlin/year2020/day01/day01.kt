@@ -8,7 +8,7 @@ package year2020.day01
 import java.io.File
 
 private const val TARGET = 2020
-private val DEFAULT_INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val DEFAULT_INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 private fun getRawInput(inputPath: String): String {
     return File(inputPath).readText()

@@ -7,7 +7,7 @@ import java.io.File
 
 
 private fun getTestInput(): String {
-    return File("inputs/test01.txt").readText()
+    return File("inputs/year2020/test01.txt").readText()
 }
 
 class Day01Test {

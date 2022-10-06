@@ -3,7 +3,7 @@ package year2020.day22
 import java.io.File
 import java.util.LinkedList
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 private typealias Deck = LinkedList<Int>
 private typealias DeckSnapshot = List<Int>

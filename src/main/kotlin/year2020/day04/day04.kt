@@ -2,7 +2,7 @@ package year2020.day04
 
 import java.io.File
 
-private const val INPUT_PATH = "inputs/day04.txt"
+private const val INPUT_PATH = "inputs/year2020/day04.txt"
 
 typealias Passport = Map<String, String>
 

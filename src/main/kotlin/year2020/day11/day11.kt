@@ -2,7 +2,7 @@ package year2020.day11
 
 import java.io.File
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 private typealias Grid = List<List<Cell>>
 private typealias MutableGrid = MutableList<MutableList<Cell>>

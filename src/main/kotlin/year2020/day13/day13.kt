@@ -3,7 +3,7 @@ package year2020.day13
 import java.io.File
 import java.math.BigInteger
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 
 private fun getInput(): Pair<Int, List<String>> {

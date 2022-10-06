@@ -5,7 +5,7 @@ import java.math.BigInteger
 import kotlin.math.max
 import kotlin.math.min
 
-private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.split(".").last()}.txt"
+private val INPUT_PATH = "inputs/year2020/${object {}.javaClass.packageName.split(".").last()}.txt"
 
 private fun getInput(): Triple<List<Rule>, Ticket, List<Ticket>> {
     val inputParts = File(INPUT_PATH).readText().trim().split("\n\n").map { it.split("\n") }
