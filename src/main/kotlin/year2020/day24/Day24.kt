@@ -4,8 +4,6 @@ import java.io.File
 
 private val INPUT_PATH = "inputs/${object {}.javaClass.packageName.replace(".", "/")}.txt"
 
-private val directionSymbols = listOf("e", "se", "sw", "w", "ne", "nw")
-
 private enum class Direction(val symbol: String, val offset: Vector) {
     EAST("e", Vector(1, 0)),
     SOUTHEAST("se", Vector(0, -1)),
